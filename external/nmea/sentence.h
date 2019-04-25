@@ -30,7 +30,8 @@ enum nmeaPACKTYPE
   GPGSA   = 0x0002,   //!< GSA - GPS receiver operating mode, SVs used for navigation, and DOP values.
   GPGSV   = 0x0004,   //!< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values.
   GPRMC   = 0x0008,   //!< RMC - Recommended Minimum Specific GPS/TRANSIT Data.
-  GPVTG   = 0x0010    //!< VTG - Actual track made good and speed over ground.
+  GPVTG   = 0x0010,   //!< VTG - Actual track made good and speed over ground.
+  GPGST   = 0x0012    //!< GST - GPS Pseudorange Noise Statistics
 };
 
 /**
@@ -115,12 +116,31 @@ typedef struct _nmeaGPVTG
   char    spk_k;      //!< Fixed text 'K' indicates that speed over ground is in kilometers/hour
 
 } nmeaGPVTG;
+  
+
+/**
+ * GST packet information structure (GPS Pseudorange Noise Statistics)
+ */
+typedef struct _nmeaGPGST
+{
+  nmeaTIME utc;       //!< UTC of position fix
+  double  rms_pr;     //!< RMS value of the pseudorange residuals; includes carrier phase residuals during periods of RTK (float) and RTK (fixed) processing
+  double  err_major;  //!< Error ellipse semi-major axis 1 sigma error, in meters
+  double  err_minor;  //!< Error ellipse semi-minor axis 1 sigma error, in meters
+  double  err_ori;    //!< Error ellipse orientation, degrees from true north
+  double  sig_lat;    //!< Latitude 1 sigma error, in meters
+  double  sig_lon;    //!< Longitude 1 sigma error, in meters
+  double  sig_alt;    //!< Height 1 sigma error, in meters
+  double  rms_h;      //!< Horizontal RMS, derived by sig_lat and sig_lon
+  double  rms_v;      //!< Vertical RMS, derived by sig_alt
+} nmeaGPGST;
 
 void nmea_zero_GPGGA( nmeaGPGGA *pack );
 void nmea_zero_GPGSA( nmeaGPGSA *pack );
 void nmea_zero_GPGSV( nmeaGPGSV *pack );
 void nmea_zero_GPRMC( nmeaGPRMC *pack );
 void nmea_zero_GPVTG( nmeaGPVTG *pack );
+void nmea_zero_GPGST( nmeaGPGST *pack );
 
 #ifdef  __cplusplus
 }
